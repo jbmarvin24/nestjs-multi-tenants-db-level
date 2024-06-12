@@ -9,7 +9,7 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -17,7 +17,15 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migrate:create:blank": "bash ./migrate-create-blank.sh",
+    "migrate:create": "bash ./migrate-create.sh",
+    "migrate:create:tenant": "bash ./migrate-create-tenant.sh",
+    "migrate": "dotenv -- ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d src/db/datasource.ts",
+    "migrate:revert": "dotenv -- ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:revert -d src/db/datasource.ts",
+    "db:drop": "dotenv -- ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:drop -d src/db/datasource.ts",
+    "db:reset": "npm run db:drop && npm run migrate"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -42,6 +50,7 @@
     "@types/supertest": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "dotenv-cli": "^7.4.2",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
