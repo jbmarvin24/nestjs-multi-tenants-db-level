@@ -5,5 +5,5 @@ import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOpti
 export const tenantOrmConfig: MysqlConnectionOptions = {
   ...ormConfig,
   entities: [join(__dirname, './modules/tenanted/**/*.entity{.ts,.js}')],
-  migrations: [join(__dirname, './migrations/tenant/*{.ts,.js}')],
+  migrations: [join(__dirname, './migrations/tenanted/*{.ts,.js}')],
 };
