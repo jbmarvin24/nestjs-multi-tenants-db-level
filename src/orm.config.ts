@@ -15,6 +15,7 @@ export const ormConfig: MysqlConnectionOptions = {
   migrationsRun: true,
 };
 
+// For Typeorm CLI
 export const AppDataSource = new DataSource({
   ...ormConfig,
 });

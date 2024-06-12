@@ -2,13 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { tenancyMiddleware } from './modules/tenancy/tenancy.middleware';
 import { getTenantConnection } from './modules/tenancy/tenancy.utils';
-import { AppDataSource } from './orm.config';
+import { DataSource } from 'typeorm';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(tenancyMiddleware);
+  const appSource = app.get(DataSource);
 
-  const appSource = await AppDataSource.initialize();
   const databases = await appSource.query<{ name: string }[]>(
     "SELECT schema_name `name` FROM  information_schema.schemata WHERE schema_name LIKE 'tenant_%';",
   );
