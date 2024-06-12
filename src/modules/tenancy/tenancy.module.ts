@@ -1,4 +1,4 @@
-import { Global, Module, Scope } from '@nestjs/common';
+import { BadRequestException, Global, Module, Scope } from '@nestjs/common';
 import { CONNECTION } from './tenancy.symbols';
 import { Request as ExpressRequest } from 'express';
 import { getTenantConnection } from './tenancy.utils';
@@ -9,12 +9,13 @@ const connectionFactory = {
   scope: Scope.REQUEST,
   useFactory: (request: ExpressRequest) => {
     const { tenantId } = request;
+    console.log(tenantId);
 
     if (tenantId) {
       return getTenantConnection(tenantId);
+    } else {
+      throw new BadRequestException('Tenant Id is required in headers');
     }
-
-    return null;
   },
   inject: [REQUEST],
 };

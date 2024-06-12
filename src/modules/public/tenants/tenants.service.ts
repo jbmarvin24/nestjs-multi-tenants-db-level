@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTenantDto } from './dto/create-tenant.dto';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { Tenant } from './entities/tenant.entity';
-import { Repository, getManager } from 'typeorm';
-import { getTenantConnection } from '../../tenancy/tenancy.utils';
+import { DataSource, Repository } from 'typeorm';
+import { tenantOrmConfig } from '../../../tenants-orm.config';
 
 @Injectable()
 export class TenantsService {
   constructor(
     @InjectRepository(Tenant)
     private readonly tenantRepository: Repository<Tenant>,
+    @InjectDataSource()
+    private dataSource: DataSource,
   ) {}
 
   async create(createTenantDto: CreateTenantDto) {
@@ -20,11 +22,20 @@ export class TenantsService {
     );
 
     const databaseName = `tenant_${createdTenant.id}`;
-    await getManager().query(`CREATE DATABASE IF NOT EXISTS ${databaseName};`);
+    console.log(databaseName);
 
-    const connection = await getTenantConnection(createdTenant.id);
-    await connection.runMigrations();
-    await connection.close();
+    await this.dataSource.query(
+      `CREATE DATABASE IF NOT EXISTS \`${databaseName}\``,
+    );
+
+    const tenantDataSource = new DataSource({
+      ...tenantOrmConfig,
+      database: databaseName,
+    });
+
+    const tenantDatasource = await tenantDataSource.initialize();
+    await tenantDatasource.runMigrations();
+    await tenantDatasource.destroy();
 
     return createdTenant;
   }

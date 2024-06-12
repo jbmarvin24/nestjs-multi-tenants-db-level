@@ -1,9 +1,15 @@
-import * as ormconfig from './orm.config';
+import { DataSource } from 'typeorm';
 
 import { join } from 'path';
+import { ormConfig } from './orm.config';
+import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 
-module.exports = {
-  ...ormconfig,
+export const tenantOrmConfig: MysqlConnectionOptions = {
+  ...ormConfig,
   entities: [join(__dirname, './modules/tenanted/**/*.entity{.ts,.js}')],
-  migrations: [join(__dirname, './migrations/tenanted/*{.ts,.js}')],
+  migrations: [join(__dirname, './migrations/tenant/*{.ts,.js}')],
 };
+
+export const TenantDataSource = new DataSource({
+  ...tenantOrmConfig,
+});

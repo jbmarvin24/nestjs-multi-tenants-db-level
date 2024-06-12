@@ -1,6 +1,8 @@
 import { join } from 'path';
+import { DataSource } from 'typeorm';
+import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 
-module.exports = {
+export const ormConfig: MysqlConnectionOptions = {
   type: 'mysql',
   host: 'localhost',
   port: 3306,
@@ -8,7 +10,11 @@ module.exports = {
   password: 'password',
   database: 'nestjs-multi-tenant',
   logging: true,
-  autoLoadEntities: true,
   entities: [join(__dirname, './modules/public/**/*.entity{.ts,.js}')],
   migrations: [join(__dirname, './migrations/public/*{.ts,.js}')],
+  migrationsRun: true,
 };
+
+export const AppDataSource = new DataSource({
+  ...ormConfig,
+});

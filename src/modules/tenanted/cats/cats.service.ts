@@ -1,16 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cat } from './entities/cat.entity';
+import { CONNECTION } from '../../tenancy/tenancy.symbols';
 
 @Injectable()
 export class CatsService {
-  constructor(
-    @InjectRepository(Cat)
-    private readonly catRepository: Repository<Cat>,
-  ) {}
+  private readonly catRepository: Repository<Cat>;
+
+  constructor(@Inject(CONNECTION) datasource: DataSource) {
+    this.catRepository = datasource.getRepository(Cat);
+  }
 
   async create(createCatDto: CreateCatDto) {
     return await this.catRepository.save(
