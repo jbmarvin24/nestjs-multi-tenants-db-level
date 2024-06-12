@@ -9,7 +9,6 @@ const connectionFactory = {
   scope: Scope.REQUEST,
   useFactory: (request: ExpressRequest) => {
     const { tenantId } = request;
-    console.log(tenantId);
 
     if (tenantId) {
       return getTenantConnection(tenantId);

@@ -22,7 +22,6 @@ export class TenantsService {
     );
 
     const databaseName = `tenant_${createdTenant.id}`;
-    console.log(databaseName);
 
     await this.dataSource.query(
       `CREATE DATABASE IF NOT EXISTS \`${databaseName}\``,
@@ -33,9 +32,9 @@ export class TenantsService {
       database: databaseName,
     });
 
-    const tenantDatasource = await tenantDataSource.initialize();
-    await tenantDatasource.runMigrations();
-    await tenantDatasource.destroy();
+    await tenantDataSource.initialize();
+    await tenantDataSource.runMigrations();
+    await tenantDataSource.destroy();
 
     return createdTenant;
   }
